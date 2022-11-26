@@ -1,7 +1,4 @@
 <?php
-    //print php info    
-    
-
     // Importa as classes do PHPMailer como globais
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\SMTP;
@@ -12,41 +9,44 @@
     require 'PHPMailer/src/PHPMailer.php';
     require 'PHPMailer/src/SMTP.php';
 
-    // Criar uma instancia da classe PHPMailer
-    $email = new PHPMailer;
+    function enviarEmail($destinatarios, $assunto, $mensagem)
+    {
+        // Criar uma instancia da classe PHPMailer
+        $email = new PHPMailer;
 
-    // Configurações do Servidor
-    $email->isSMTP(); // Define que o e-mail vai ser do tipo SMTP
-    $email->Host = "smtp.office365.com"; // Define o Host para envio de email
-    $email->SMTPAuth = true; // Habilita a autenticacao com SMTP
+        // Configurações do Servidor
+        $email->isSMTP(); // Define que o e-mail vai ser do tipo SMTP
+        $email->Host = "smtp.office365.com"; // Define o Host para envio de email
+        $email->SMTPAuth = true; // Habilita a autenticacao com SMTP
 
-    // Usuarios do e-mail
-    $email->Username = 'jolongsbr@hotmail.com';
-    $email->Password = 'Emailtesteviora';
-    $email->SMTPSecure = 'tls';
-    $email->Port = 587;
+        // Usuarios do e-mail
+        $email->Username = 'jolongsbr@hotmail.com';
+        $email->Password = 'Emailtesteviora';
+        $email->SMTPSecure = 'tls';
+        $email->Port = 587;
 
-    //informações de quem vai enviar o email
-    $email->setFrom('jolongsbr@hotmail.com','Enviador teste');
-    $email->addReplyTo('jolongsbr@hotmail.com','nome do enviador');
+        // Informaçõs de quem vai enviar o e-mail
+        $email->setFrom('jolongsbr@hotmail.com', 'Viora APP');
+        $email->addReplyTo('jolongsbr@hotmail.com', 'Viora');
 
-    //informaçoes de quem vai receber   
-    $email->addAddress('', 'artur');
-    $email->addAddress('pereira.artur@hotmail.com', 'artur');
+        // Informações de quem vai receber o e=mail
 
+        foreach ($destinatarios as $destinatario) {
+            $email->addAddress($destinatario['email'], $destinatario['nome']);
+        }
 
-    //dados para corpo de email
-    $email->isHTML('true');  //define que vamos enviar um html como email
+        // Dados para corpo do email
+        $email->isHTML(true); // Define que vamos enviar um HTML como email
 
-    $email->Subject = 'Teste do server de envio de email'; //assunto
+        $email->Subject = $assunto; // Aqui definimos o assunto do email
 
-    //corpo do email
-    $corpo = 'EMAIL TESTE! ';
-    $email->Body = $corpo;
+        // Corpo do e-mail
+        $email->Body = $mensagem;
 
-    //envia
-    if ($email->send()){
-        echo "email enviado com sucesso!";
-    }else{
-        echo "ERRO " . $email->ErrorInfo;
+        // Envia o email
+        if ($email->send()) {
+            return true;
+        } else {
+            return false;
+        }
     }
